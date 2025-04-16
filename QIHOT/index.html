@@ -1,0 +1,787 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Retrocausality Report</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #006064;
+            --secondary: #2e7d32;
+            --accent: #6a1b9a;
+            --highlight: #f9a825;
+            --text: #333333;
+            --light-bg: #f5f5f5;
+            --white: #ffffff;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--light-bg);
+            padding-top: 60px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Sticky Navigation */
+        .nav-tabs {
+            position: sticky;
+            top: 0;
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            z-index: 100;
+            display: flex;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        .nav-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .tab-btn {
+            padding: 15px 25px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+        }
+        
+        .tab-btn:hover:not(.active) {
+            background-color: rgba(0, 96, 100, 0.1);
+        }
+        
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            padding: 30px 0;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Report Sections */
+        .section {
+            background-color: var(--white);
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+        
+        h1, h2, h3, h4 {
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+        }
+        
+        h3 {
+            font-size: 1.4rem;
+            color: var(--secondary);
+        }
+        
+        h4 {
+            font-size: 1.2rem;
+            color: var(--accent);
+        }
+        
+        p {
+            margin-bottom: 15px;
+        }
+        
+        ul, ol {
+            margin-bottom: 20px;
+            padding-left: 20px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        /* Charts */
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 30px 0;
+        }
+        
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: var(--shadow);
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        tr:hover {
+            background-color: rgba(0, 96, 100, 0.1);
+        }
+        
+        /* Figures */
+        .figure {
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .figure img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            box-shadow: var(--shadow);
+        }
+        
+        .caption {
+            font-style: italic;
+            margin-top: 10px;
+            color: #666;
+        }
+        
+        /* Key Findings */
+        .key-findings {
+            background-color: rgba(0, 96, 100, 0.1);
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            margin: 30px 0;
+        }
+        
+        .key-findings h3 {
+            color: var(--primary);
+            margin-top: 0;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .chart-container {
+                height: 300px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .tab-btn {
+                padding: 12px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .section {
+                padding: 15px;
+            }
+            
+            th, td {
+                padding: 8px 10px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-tabs">
+        <button class="tab-btn active" data-tab="introduction">Introduction</button>
+        <button class="tab-btn" data-tab="foundations">Foundations</button>
+        <button class="tab-btn" data-tab="qihot">QIHOT Framework</button>
+        <button class="tab-btn" data-tab="comparison">Comparative Analysis</button>
+        <button class="tab-btn" data-tab="experiments">Experimental Tests</button>
+        <button class="tab-btn" data-tab="conclusion">Conclusion</button>
+    </div>
+    
+    <div class="container">
+        <h1>Quantum Retrocausality Report</h1>
+        
+        <!-- Introduction Tab -->
+        <div id="introduction" class="tab-content active">
+            <div class="section">
+                <h2>1. Introduction</h2>
+                <p>Quantum mechanics has long challenged classical intuitions about time, causality, and the flow of information. In recent years, retrocausal models and interpretations asserting time symmetry have gained renewed interest as researchers strive to reconcile nonlocal quantum phenomena with relativistic causality.</p>
+                
+                <p>Within this vibrant context, the Quantum-Informational History Optimization and Retrocausality (QIHOT) framework has emerged as a novel attempt to unify quantum mechanics and information theory via a global retrocausal optimization principle.</p>
+                
+                <div class="key-findings">
+                    <h3>Key Objectives</h3>
+                    <ul>
+                        <li>Analyze QIHOT within the broader landscape of retrocausal approaches</li>
+                        <li>Compare with established interpretations (TI, TSVF)</li>
+                        <li>Evaluate potential to resolve foundational puzzles</li>
+                        <li>Examine experimental implications</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Foundations Tab -->
+        <div id="foundations" class="tab-content">
+            <div class="section">
+                <h2>2. Foundations: Retrocausality in Quantum Mechanics</h2>
+                <p>The concept of retrocausality in quantum mechanics posits that future events, such as measurement settings, may exert an influence on past quantum states. This idea challenges the conventional unidirectional flow of causality.</p>
+                
+                <h3>2.1 Historical and Conceptual Background</h3>
+                <p>Early delayed-choice experiments revealed that quantum systems can exhibit behavior that is contingent on future measurement settings, leading to debates about the need for retrocausal explanations.</p>
+                
+                <div class="chart-container">
+                    <canvas id="experimentTimeline"></canvas>
+                </div>
+                
+                <h3>2.2 Theoretical Interpretations</h3>
+                <p>Two major interpretations that embrace retrocausality:</p>
+                <ol>
+                    <li><strong>Transactional Interpretation (TI):</strong> Quantum events as transactions involving offer and confirmation waves</li>
+                    <li><strong>Two-State-Vector Formalism (TSVF):</strong> Dual-vector description of quantum states evolving from past and future</li>
+                </ol>
+            </div>
+        </div>
+        
+        <!-- QIHOT Framework Tab -->
+        <div id="qihot" class="tab-content">
+            <div class="section">
+                <h2>3. The QIHOT Framework</h2>
+                <p>Quantum-Informational History Optimization and Retrocausality (QIHOT) proposes a unification of quantum mechanics and information theory by positing a global optimization principle that retrocausally influences the quantum history of a system.</p>
+                
+                <h3>3.1 Central Tenets</h3>
+                <ul>
+                    <li><strong>Global Optimization:</strong> Quantum histories correspond to optimized configurations</li>
+                    <li><strong>Retrocausal Influences:</strong> Future outcomes contribute to historical trajectory</li>
+                    <li><strong>Informational Consistency:</strong> Governed by conservation laws</li>
+                </ul>
+                
+                <div class="chart-container">
+                    <canvas id="qihotPrinciples"></canvas>
+                </div>
+                
+                <h3>3.2 Informational Cost Functions</h3>
+                <p>QIHOT introduces an informational cost function that assigns weights to possible quantum histories, constructed from measures of entropy, Fisher information, or dimensional witness constraints.</p>
+                
+                <h3>3.3 Retrospective Analysis</h3>
+                <p>QIHOT treats time symmetrically as a dimension across which informational optimization operates, making retrocausal influences integral elements of a globally consistent quantum dynamic.</p>
+            </div>
+        </div>
+        
+        <!-- Comparative Analysis Tab -->
+        <div id="comparison" class="tab-content">
+            <div class="section">
+                <h2>4. Comparative Analysis</h2>
+                <p>QIHOT can be viewed as a synthesis of TI and TSVF elements, but with a unique emphasis on informational optimization.</p>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Framework</th>
+                            <th>Retrocausal Mechanism</th>
+                            <th>Core Principle</th>
+                            <th>Strengths</th>
+                            <th>Challenges</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Transactional Interpretation (TI)</td>
+                            <td>Exchange of offer and confirmation waves</td>
+                            <td>Time-symmetric transactions</td>
+                            <td>Intuitive, preserves relativistic invariance</td>
+                            <td>Possible ambiguities in transaction completion</td>
+                        </tr>
+                        <tr>
+                            <td>Two-State-Vector Formalism (TSVF)</td>
+                            <td>Dual evolution of state vectors</td>
+                            <td>Pre- and post-selection effect on outcomes</td>
+                            <td>Captures time symmetry and weak measurement effects</td>
+                            <td>Interpretation challenges with determinism</td>
+                        </tr>
+                        <tr>
+                            <td>QIHOT Framework</td>
+                            <td>Global optimization via retrocausal informational cost function</td>
+                            <td>Minimization of informational cost function</td>
+                            <td>Unified approach connecting information theory and retrocausality</td>
+                            <td>Defining precise operational cost function</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="figure">
+                    <div class="chart-container">
+                        <canvas id="frameworkComparison"></canvas>
+                    </div>
+                    <p class="caption">Figure 1: Comparative Analysis of Retrocausal Mechanisms</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Experimental Tests Tab -->
+        <div id="experiments" class="tab-content">
+            <div class="section">
+                <h2>5. Experimental Implications and Proposed Tests</h2>
+                <p>QIHOT aims to distinguish itself by predicting unique patterns in quantum measurement outcomes, particularly in experiments designed to probe retrocausal influences.</p>
+                
+                <h3>5.1 Key Experimental Approaches</h3>
+                <ol>
+                    <li>Delayed-Choice Quantum Eraser Experiments</li>
+                    <li>Leggett-Garg and Dimension Witness Violations</li>
+                    <li>Device-Independent Protocols in Quantum Switch Experiments</li>
+                </ol>
+                
+                <div class="chart-container">
+                    <canvas id="experimentResults"></canvas>
+                </div>
+                
+                <h3>5.2 Proposed Experimental Design</h3>
+                <p>A multi-part experiment is proposed to directly test QIHOT:</p>
+                <ul>
+                    <li><strong>Stage 1:</strong> Delayed-choice quantum eraser with enhanced resolution detectors</li>
+                    <li><strong>Stage 2:</strong> Leggett-Garg inequality measurements in macroscopic systems</li>
+                    <li><strong>Stage 3:</strong> Device-independent certification using quantum switch</li>
+                </ul>
+                
+                <div class="figure">
+                    <div class="chart-container">
+                        <canvas id="experimentStages"></canvas>
+                    </div>
+                    <p class="caption">Figure 2: Proposed Experimental Framework for Testing QIHOT</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Conclusion Tab -->
+        <div id="conclusion" class="tab-content">
+            <div class="section">
+                <h2>7. Conclusion</h2>
+                <p>The Quantum-Informational History Optimization and Retrocausality (QIHOT) framework represents an ambitious attempt to unify quantum mechanics and information theory through a novel global optimization principle.</p>
+                
+                <div class="key-findings">
+                    <h3>Key Findings</h3>
+                    <ul>
+                        <li><strong>Global Optimization:</strong> Integrates past and future boundary conditions</li>
+                        <li><strong>Comparative Strengths:</strong> Unifies TI and TSVF with informational focus</li>
+                        <li><strong>Experimental Predictions:</strong> Characteristic deviations in quantum tests</li>
+                        <li><strong>Foundational Implications:</strong> Challenges classical causality concepts</li>
+                    </ul>
+                </div>
+                
+                <h3>Future Directions</h3>
+                <p>While promising, QIHOT requires:</p>
+                <ol>
+                    <li>Precise definition of informational cost functions</li>
+                    <li>Experimental verification through refined quantum tests</li>
+                    <li>Integration with quantum gravity approaches</li>
+                    <li>Philosophical examination of temporal reality</li>
+                </ol>
+                
+                <div class="chart-container">
+                    <canvas id="futureDirections"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab functionality
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove active class from all buttons and contents
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked button and corresponding content
+                    btn.classList.add('active');
+                    const tabId = btn.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                    
+                    // Initialize charts when tab becomes active
+                    if (tabId === 'foundations') initExperimentTimeline();
+                    if (tabId === 'qihot') initQIHOTPrinciples();
+                    if (tabId === 'comparison') initFrameworkComparison();
+                    if (tabId === 'experiments') initExperimentCharts();
+                    if (tabId === 'conclusion') initFutureDirections();
+                });
+            });
+            
+            // Initialize all charts for the first active tab
+            initExperimentTimeline();
+            
+            // Chart initialization functions
+            function initExperimentTimeline() {
+                if (!window.chartInstances) window.chartInstances = {};
+                if (window.chartInstances.experimentTimeline) return;
+                
+                const ctx = document.getElementById('experimentTimeline').getContext('2d');
+                window.chartInstances.experimentTimeline = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['1970s', '1980s', '1990s', '2000s', '2010s', '2020s'],
+                        datasets: [{
+                            label: 'Retrocausal Research Milestones',
+                            data: [12, 18, 25, 42, 68, 95],
+                            backgroundColor: [
+                                'rgba(0, 96, 100, 0.6)',
+                                'rgba(46, 125, 50, 0.6)',
+                                'rgba(106, 27, 154, 0.6)',
+                                'rgba(249, 168, 37, 0.6)',
+                                'rgba(0, 96, 100, 0.6)',
+                                'rgba(46, 125, 50, 0.6)'
+                            ],
+                            borderColor: [
+                                'rgba(0, 96, 100, 1)',
+                                'rgba(46, 125, 50, 1)',
+                                'rgba(106, 27, 154, 1)',
+                                'rgba(249, 168, 37, 1)',
+                                'rgba(0, 96, 100, 1)',
+                                'rgba(46, 125, 50, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Number of Publications'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Decade'
+                                }
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Growth of Retrocausal Research Over Time'
+                            }
+                        }
+                    }
+                });
+            }
+            
+            function initQIHOTPrinciples() {
+                if (!window.chartInstances) window.chartInstances = {};
+                if (window.chartInstances.qihotPrinciples) return;
+                
+                const ctx = document.getElementById('qihotPrinciples').getContext('2d');
+                window.chartInstances.qihotPrinciples = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Global Optimization', 'Retrocausal Influences', 'Informational Consistency'],
+                        datasets: [{
+                            data: [35, 35, 30],
+                            backgroundColor: [
+                                'rgba(0, 96, 100, 0.7)',
+                                'rgba(46, 125, 50, 0.7)',
+                                'rgba(106, 27, 154, 0.7)'
+                            ],
+                            borderColor: [
+                                'rgba(0, 96, 100, 1)',
+                                'rgba(46, 125, 50, 1)',
+                                'rgba(106, 27, 154, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'QIHOT Framework Principles'
+                            },
+                            legend: {
+                                position: 'right'
+                            }
+                        }
+                    }
+                });
+            }
+            
+            function initFrameworkComparison() {
+                if (!window.chartInstances) window.chartInstances = {};
+                if (window.chartInstances.frameworkComparison) return;
+                
+                const ctx = document.getElementById('frameworkComparison').getContext('2d');
+                window.chartInstances.frameworkComparison = new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['Conceptual Clarity', 'Mathematical Rigor', 'Experimental Testability', 'Explanatory Power', 'Unification Potential'],
+                        datasets: [
+                            {
+                                label: 'Transactional Interpretation',
+                                data: [85, 70, 65, 75, 60],
+                                backgroundColor: 'rgba(0, 96, 100, 0.2)',
+                                borderColor: 'rgba(0, 96, 100, 1)',
+                                borderWidth: 2,
+                                pointBackgroundColor: 'rgba(0, 96, 100, 1)'
+                            },
+                            {
+                                label: 'Two-State-Vector',
+                                data: [70, 90, 75, 80, 70],
+                                backgroundColor: 'rgba(46, 125, 50, 0.2)',
+                                borderColor: 'rgba(46, 125, 50, 1)',
+                                borderWidth: 2,
+                                pointBackgroundColor: 'rgba(46, 125, 50, 1)'
+                            },
+                            {
+                                label: 'QIHOT Framework',
+                                data: [75, 85, 80, 90, 85],
+                                backgroundColor: 'rgba(106, 27, 154, 0.2)',
+                                borderColor: 'rgba(106, 27, 154, 1)',
+                                borderWidth: 2,
+                                pointBackgroundColor: 'rgba(106, 27, 154, 1)'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            r: {
+                                angleLines: {
+                                    display: true
+                                },
+                                suggestedMin: 0,
+                                suggestedMax: 100
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Framework Comparison Metrics'
+                            }
+                        }
+                    }
+                });
+            }
+            
+            function initExperimentCharts() {
+                if (!window.chartInstances) window.chartInstances = {};
+                
+                // Experiment Results Chart
+                if (!window.chartInstances.experimentResults) {
+                    const ctx1 = document.getElementById('experimentResults').getContext('2d');
+                    window.chartInstances.experimentResults = new Chart(ctx1, {
+                        type: 'line',
+                        data: {
+                            labels: ['0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1.0'],
+                            datasets: [
+                                {
+                                    label: 'Standard Quantum Prediction',
+                                    data: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+                                    borderColor: 'rgba(0, 96, 100, 1)',
+                                    borderWidth: 2,
+                                    fill: false
+                                },
+                                {
+                                    label: 'QIHOT Prediction',
+                                    data: [0.12, 0.23, 0.35, 0.45, 0.55, 0.62, 0.68, 0.75, 0.82, 0.88],
+                                    borderColor: 'rgba(106, 27, 154, 1)',
+                                    borderWidth: 2,
+                                    borderDash: [5, 5],
+                                    fill: false
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Correlation Coefficient'
+                                    }
+                                },
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Measurement Parameter'
+                                    }
+                                }
+                            },
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Predicted Experimental Outcomes'
+                                }
+                            }
+                        }
+                    });
+                }
+                
+                // Experiment Stages Chart
+                if (!window.chartInstances.experimentStages) {
+                    const ctx2 = document.getElementById('experimentStages').getContext('2d');
+                    window.chartInstances.experimentStages = new Chart(ctx2, {
+                        type: 'horizontalBar',
+                        data: {
+                            labels: ['Stage 1', 'Stage 2', 'Stage 3'],
+                            datasets: [{
+                                label: 'Experimental Complexity',
+                                data: [30, 50, 70],
+                                backgroundColor: [
+                                    'rgba(0, 96, 100, 0.6)',
+                                    'rgba(46, 125, 50, 0.6)',
+                                    'rgba(106, 27, 154, 0.6)'
+                                ],
+                                borderColor: [
+                                    'rgba(0, 96, 100, 1)',
+                                    'rgba(46, 125, 50, 1)',
+                                    'rgba(106, 27, 154, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            indexAxis: 'y',
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                x: {
+                                    beginAtZero: true,
+                                    max: 100,
+                                    title: {
+                                        display: true,
+                                        text: 'Implementation Difficulty (%)'
+                                    }
+                                }
+                            },
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Proposed Experimental Stages'
+                                },
+                                legend: {
+                                    display: false
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+            
+            function initFutureDirections() {
+                if (!window.chartInstances) window.chartInstances = {};
+                if (window.chartInstances.futureDirections) return;
+                
+                const ctx = document.getElementById('futureDirections').getContext('2d');
+                window.chartInstances.futureDirections = new Chart(ctx, {
+                    type: 'polarArea',
+                    data: {
+                        labels: ['Theoretical Development', 'Experimental Verification', 'Quantum Gravity Integration', 'Philosophical Implications'],
+                        datasets: [{
+                            data: [30, 25, 25, 20],
+                            backgroundColor: [
+                                'rgba(0, 96, 100, 0.7)',
+                                'rgba(46, 125, 50, 0.7)',
+                                'rgba(106, 27, 154, 0.7)',
+                                'rgba(249, 168, 37, 0.7)'
+                            ],
+                            borderColor: [
+                                'rgba(0, 96, 100, 1)',
+                                'rgba(46, 125, 50, 1)',
+                                'rgba(106, 27, 154, 1)',
+                                'rgba(249, 168, 37, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Future Research Priorities'
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Window resize handler to redraw charts
+            window.addEventListener('resize', function() {
+                if (window.chartInstances) {
+                    Object.values(window.chartInstances).forEach(chart => {
+                        chart.resize();
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
